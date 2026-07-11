@@ -425,7 +425,7 @@ export default function FlippyBall() {
         ctx.lineWidth = 3;
         ctx.beginPath();
         // rounded rect
-        const w = 110, h = 22, r = 10;
+        const w = 140, h = 22, r = 10;
         ctx.moveTo(-w / 2 + r, -h / 2);
         ctx.lineTo(w / 2 - r, -h / 2);
         ctx.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
