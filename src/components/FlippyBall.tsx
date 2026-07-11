@@ -128,7 +128,7 @@ export default function FlippyBall() {
     );
 
     // Flipper-Pivot ganz an den Seiten
-    const flipperW = 140;
+    const flipperW = 200;
     const flipperH = 22;
     const pivotY = H - 120;
     const leftPivotPos = { x: 30, y: pivotY };
