@@ -18,13 +18,13 @@ interface BumperDef {
 }
 
 const BUMPERS: BumperDef[] = [
-  { x: 110, y: 180, r: 34, color: "#ff3b6b", glow: "#ffb3c6", emoji: "⭐", points: 100 },
-  { x: 240, y: 130, r: 38, color: "#ffd23f", glow: "#fff2a8", emoji: "😀", points: 150 },
-  { x: 370, y: 200, r: 34, color: "#4ecdc4", glow: "#b8f3ee", emoji: "🚀", points: 100 },
-  { x: 80, y: 320, r: 30, color: "#ff8c42", glow: "#ffd1a8", emoji: "🐶", points: 75 },
-  { x: 240, y: 280, r: 42, color: "#a06cd5", glow: "#d9c3f0", emoji: "❤️", points: 200 },
-  { x: 400, y: 320, r: 30, color: "#3ec300", glow: "#c3f0a8", emoji: "🦄", points: 75 },
-  { x: 240, y: 430, r: 34, color: "#00b4ff", glow: "#b0e6ff", emoji: "🐠", points: 100 },
+  { x: 140, y: 220, r: 34, color: "#ff3b6b", glow: "#ffb3c6", emoji: "⭐", points: 100 },
+  { x: 220, y: 130, r: 38, color: "#ffd23f", glow: "#fff2a8", emoji: "😀", points: 150 },
+  { x: 340, y: 220, r: 34, color: "#4ecdc4", glow: "#b8f3ee", emoji: "🚀", points: 100 },
+  { x: 80, y: 340, r: 30, color: "#ff8c42", glow: "#ffd1a8", emoji: "🐶", points: 75 },
+  { x: 240, y: 310, r: 42, color: "#a06cd5", glow: "#d9c3f0", emoji: "❤️", points: 200 },
+  { x: 400, y: 340, r: 30, color: "#3ec300", glow: "#c3f0a8", emoji: "🦄", points: 75 },
+  { x: 240, y: 450, r: 34, color: "#00b4ff", glow: "#b0e6ff", emoji: "🐠", points: 100 },
 ];
 
 // Simple WebAudio sound engine
