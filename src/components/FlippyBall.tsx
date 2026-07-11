@@ -290,8 +290,8 @@ export default function FlippyBall() {
     Matter.Events.on(engine, "beforeUpdate", () => {
       const lf = leftFlipperRef.current!;
       const rf = rightFlipperRef.current!;
-      const upSpeed = 25;    // rad/s beim Schlagen (schnell)
-      const downSpeed = 8;   // rad/s beim Zurückfallen
+      const upSpeed = 0.35;   // rad pro Schritt (schnell nach oben)
+      const downSpeed = 0.12; // rad pro Schritt (Rückfall)
       const maxUp = -0.55;   // links: negativ = nach oben
       const rest = 0.35;     // Ruhewinkel (Spitze leicht nach unten)
 
