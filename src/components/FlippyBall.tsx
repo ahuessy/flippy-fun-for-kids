@@ -19,7 +19,7 @@ interface BumperDef {
 
 const BUMPERS: BumperDef[] = [
   { x: 140, y: 220, r: 34, color: "#ff3b6b", glow: "#ffb3c6", emoji: "⭐", points: 100 },
-  { x: 220, y: 130, r: 38, color: "#ffd23f", glow: "#fff2a8", emoji: "😀", points: 150 },
+  { x: 220, y: 70, r: 36, color: "#ffd23f", glow: "#fff2a8", emoji: "😀", points: 150 },
   { x: 340, y: 220, r: 34, color: "#4ecdc4", glow: "#b8f3ee", emoji: "🚀", points: 100 },
   { x: 80, y: 340, r: 30, color: "#ff8c42", glow: "#ffd1a8", emoji: "🐶", points: 75 },
   { x: 240, y: 310, r: 42, color: "#a06cd5", glow: "#d9c3f0", emoji: "❤️", points: 200 },
