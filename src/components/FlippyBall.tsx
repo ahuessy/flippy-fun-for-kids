@@ -370,15 +370,15 @@ export default function FlippyBall() {
       }
       ctx.restore();
 
-      // Rinnen / schräge Wände zeichnen
+      // Rinnen / schräge Wände zeichnen (schließen Seiten oberhalb der Flipper)
       ctx.strokeStyle = "#ffde59";
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 10;
       ctx.lineCap = "round";
       ctx.beginPath();
-      ctx.moveTo(10, 540);
-      ctx.lineTo(190, 620);
-      ctx.moveTo(W - 10, 540);
-      ctx.lineTo(W - 190, 620);
+      ctx.moveTo(0, 500);
+      ctx.lineTo(30, H - 120);
+      ctx.moveTo(W, 500);
+      ctx.lineTo(W - 30, H - 120);
       ctx.stroke();
 
       // Chute
