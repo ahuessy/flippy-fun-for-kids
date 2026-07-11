@@ -239,7 +239,9 @@ export default function FlippyBall() {
       damping: 0.1,
     });
 
-    Matter.World.add(engine.world, [left, right, leftPivot, rightPivot, leftStopDown, rightStopDown]);
+    Matter.World.add(engine.world, [left, right, leftPivot, rightPivot]);
+    // stopDown constraints entfernt — Flipper werden direkt per Winkel gesteuert
+    void leftStopDown; void rightStopDown;
     leftFlipperRef.current = left;
     rightFlipperRef.current = right;
     leftPivotRef.current = leftPivot;
