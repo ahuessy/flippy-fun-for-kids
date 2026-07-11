@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Flippy Ball – Buntes Flipperspiel für Kinder" },
+      { name: "description", content: "Flippy Ball: Ein farbenfrohes Retro-Flipperspiel für Kinder mit großen Flipper-Hebeln, lustigen Symbolen und fröhlichen Sounds." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Flippy Ball – Buntes Flipperspiel für Kinder" },
+      { property: "og:description", content: "Flippy Ball: Ein farbenfrohes Retro-Flipperspiel für Kinder mit großen Flipper-Hebeln, lustigen Symbolen und fröhlichen Sounds." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Flippy Ball – Buntes Flipperspiel für Kinder" },
+      { name: "twitter:description", content: "Flippy Ball: Ein farbenfrohes Retro-Flipperspiel für Kinder mit großen Flipper-Hebeln, lustigen Symbolen und fröhlichen Sounds." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d4fe94a3-7d84-46f0-906c-d6d77ae28a99/id-preview-77bbc713--a2d53f40-249f-42cb-a778-d6a7d6131eef.lovable.app-1783754834714.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d4fe94a3-7d84-46f0-906c-d6d77ae28a99/id-preview-77bbc713--a2d53f40-249f-42cb-a778-d6a7d6131eef.lovable.app-1783754834714.png" },
     ],
     links: [
       {

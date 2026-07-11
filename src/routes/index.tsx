@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Flippy Ball – Buntes Flipperspiel für Kinder" },
       {
         property: "og:description",
-        content: "Retro-Flipper für Kinder mit 7 Bumpern, 5 Bällen und großen Flipper-Hebeln.",
+        content: "Flippy Ball: Ein farbenfrohes Retro-Flipperspiel für Kinder mit großen Flipper-Hebeln, lustigen Symbolen und fröhlichen Sounds.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
