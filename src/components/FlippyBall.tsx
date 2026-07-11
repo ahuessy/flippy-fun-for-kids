@@ -117,33 +117,46 @@ export default function FlippyBall() {
     walls.push(Matter.Bodies.rectangle(W / 2, -10, W, 20, wallOpts)); // oben
     walls.push(Matter.Bodies.rectangle(-10, H / 2, 20, H, wallOpts)); // links
     walls.push(Matter.Bodies.rectangle(W + 10, H / 2, 20, H, wallOpts)); // rechts
-    // Unten: Loch in der Mitte -> zwei Segmente (nur etwas größer als der Ball)
+    // Unten: Loch nur in der Mitte -> zwei Segmente
     const gap = 44;
+    const bottomLeftW = W / 2 - gap / 2;
     walls.push(
-      Matter.Bodies.rectangle((W / 2 - gap / 2) / 2, H + 10, W / 2 - gap / 2, 20, wallOpts),
+      Matter.Bodies.rectangle(bottomLeftW / 2, H + 10, bottomLeftW, 20, wallOpts),
+    );
+    walls.push(
+      Matter.Bodies.rectangle(W - bottomLeftW / 2, H + 10, bottomLeftW, 20, wallOpts),
+    );
+
+    // Flipper-Pivot ganz an den Seiten
+    const flipperW = 140;
+    const flipperH = 22;
+    const pivotY = H - 120;
+    const leftPivotPos = { x: 30, y: pivotY };
+    const rightPivotPos = { x: W - 30, y: pivotY };
+
+    // Schräge Wände: schließen die Seiten zwischen Seitenwand und Flipper-Pivot
+    // Linke Rampe: von (0, 500) hinunter zum linken Pivot
+    const rampLen = Math.hypot(leftPivotPos.x - 0, pivotY - 500);
+    const rampAngleL = Math.atan2(pivotY - 500, leftPivotPos.x - 0);
+    walls.push(
+      Matter.Bodies.rectangle(
+        (0 + leftPivotPos.x) / 2,
+        (500 + pivotY) / 2,
+        rampLen + 20,
+        16,
+        { ...wallOpts, angle: rampAngleL },
+      ),
     );
     walls.push(
       Matter.Bodies.rectangle(
-        W - (W / 2 - gap / 2) / 2,
-        H + 10,
-        W / 2 - gap / 2,
-        20,
-        wallOpts,
+        (W + rightPivotPos.x) / 2,
+        (500 + pivotY) / 2,
+        rampLen + 20,
+        16,
+        { ...wallOpts, angle: -rampAngleL },
       ),
     );
-    // Schräge Wände unten zur Rinne
-    walls.push(
-      Matter.Bodies.rectangle(110, 580, 180, 16, {
-        ...wallOpts,
-        angle: Math.PI / 7,
-      }),
-    );
-    walls.push(
-      Matter.Bodies.rectangle(W - 110, 580, 180, 16, {
-        ...wallOpts,
-        angle: -Math.PI / 7,
-      }),
-    );
+
     // Startschacht rechts (Rampe)
     walls.push(
       Matter.Bodies.rectangle(W - 30, 80, 60, 12, {
@@ -165,12 +178,6 @@ export default function FlippyBall() {
       Matter.World.add(engine.world, body);
       bumperBodiesRef.current.set(body.id, { ...b, body, pulse: 0 });
     }
-
-    // Flipper
-    const flipperW = 110;
-    const flipperH = 22;
-    const leftPivotPos = { x: W / 2 - gap / 2 - (flipperW - 20), y: H - 110 };
-    const rightPivotPos = { x: W / 2 + gap / 2 + (flipperW - 20), y: H - 110 };
 
     const left = Matter.Bodies.rectangle(
       leftPivotPos.x + flipperW / 2 - 10,
@@ -214,20 +221,20 @@ export default function FlippyBall() {
       stiffness: 1,
     });
 
-    // Ruhe-Stopper: begrenzen den Ruhe-Winkel per Feder
+    // Ruhe-Stopper: Flipper hängen leicht nach unten
     const leftStopDown = Matter.Constraint.create({
-      pointA: { x: leftPivotPos.x + 90, y: leftPivotPos.y + 40 },
+      pointA: { x: leftPivotPos.x + flipperW - 20, y: leftPivotPos.y + 55 },
       bodyB: left,
       pointB: { x: flipperW / 2 - 12, y: 0 },
-      length: 15,
+      length: 5,
       stiffness: 0.02,
       damping: 0.1,
     });
     const rightStopDown = Matter.Constraint.create({
-      pointA: { x: rightPivotPos.x - 90, y: rightPivotPos.y + 40 },
+      pointA: { x: rightPivotPos.x - flipperW + 20, y: rightPivotPos.y + 55 },
       bodyB: right,
       pointB: { x: -flipperW / 2 + 12, y: 0 },
-      length: 15,
+      length: 5,
       stiffness: 0.02,
       damping: 0.1,
     });
