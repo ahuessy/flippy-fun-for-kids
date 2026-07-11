@@ -305,7 +305,7 @@ export default function FlippyBall() {
         }
       } else {
         if (lf.angle < rest) {
-          Matter.Body.setAngularVelocity(lf, downSpeed / 60);
+          Matter.Body.setAngularVelocity(lf, downSpeed);
         } else {
           Matter.Body.setAngle(lf, rest);
           Matter.Body.setAngularVelocity(lf, 0);
@@ -314,14 +314,14 @@ export default function FlippyBall() {
       // Rechts (spiegelbildlich)
       if (rightDownRef.current) {
         if (rf.angle < -maxUp) {
-          Matter.Body.setAngularVelocity(rf, upSpeed / 60);
+          Matter.Body.setAngularVelocity(rf, upSpeed);
         } else {
           Matter.Body.setAngle(rf, -maxUp);
           Matter.Body.setAngularVelocity(rf, 0);
         }
       } else {
         if (rf.angle > -rest) {
-          Matter.Body.setAngularVelocity(rf, -downSpeed / 60);
+          Matter.Body.setAngularVelocity(rf, -downSpeed);
         } else {
           Matter.Body.setAngle(rf, -rest);
           Matter.Body.setAngularVelocity(rf, 0);
