@@ -18,13 +18,13 @@ interface BumperDef {
 }
 
 const BUMPERS: BumperDef[] = [
-  { x: 110, y: 180, r: 34, color: "#ff3b6b", glow: "#ffb3c6", emoji: "⭐", points: 100 },
-  { x: 240, y: 130, r: 38, color: "#ffd23f", glow: "#fff2a8", emoji: "😀", points: 150 },
-  { x: 370, y: 200, r: 34, color: "#4ecdc4", glow: "#b8f3ee", emoji: "🚀", points: 100 },
-  { x: 80, y: 320, r: 30, color: "#ff8c42", glow: "#ffd1a8", emoji: "🐶", points: 75 },
-  { x: 240, y: 280, r: 42, color: "#a06cd5", glow: "#d9c3f0", emoji: "❤️", points: 200 },
-  { x: 400, y: 320, r: 30, color: "#3ec300", glow: "#c3f0a8", emoji: "🦄", points: 75 },
-  { x: 240, y: 430, r: 34, color: "#00b4ff", glow: "#b0e6ff", emoji: "🐠", points: 100 },
+  { x: 140, y: 220, r: 34, color: "#ff3b6b", glow: "#ffb3c6", emoji: "⭐", points: 100 },
+  { x: 220, y: 70, r: 36, color: "#ffd23f", glow: "#fff2a8", emoji: "😀", points: 150 },
+  { x: 340, y: 220, r: 34, color: "#4ecdc4", glow: "#b8f3ee", emoji: "🚀", points: 100 },
+  { x: 80, y: 340, r: 30, color: "#ff8c42", glow: "#ffd1a8", emoji: "🐶", points: 75 },
+  { x: 240, y: 310, r: 42, color: "#a06cd5", glow: "#d9c3f0", emoji: "❤️", points: 200 },
+  { x: 400, y: 340, r: 30, color: "#3ec300", glow: "#c3f0a8", emoji: "🦄", points: 75 },
+  { x: 240, y: 450, r: 34, color: "#00b4ff", glow: "#b0e6ff", emoji: "🐠", points: 100 },
 ];
 
 // Simple WebAudio sound engine
@@ -117,33 +117,46 @@ export default function FlippyBall() {
     walls.push(Matter.Bodies.rectangle(W / 2, -10, W, 20, wallOpts)); // oben
     walls.push(Matter.Bodies.rectangle(-10, H / 2, 20, H, wallOpts)); // links
     walls.push(Matter.Bodies.rectangle(W + 10, H / 2, 20, H, wallOpts)); // rechts
-    // Unten: Loch in der Mitte -> zwei Segmente (nur etwas größer als der Ball)
+    // Unten: Loch nur in der Mitte -> zwei Segmente
     const gap = 44;
+    const bottomLeftW = W / 2 - gap / 2;
     walls.push(
-      Matter.Bodies.rectangle((W / 2 - gap / 2) / 2, H + 10, W / 2 - gap / 2, 20, wallOpts),
+      Matter.Bodies.rectangle(bottomLeftW / 2, H + 10, bottomLeftW, 20, wallOpts),
+    );
+    walls.push(
+      Matter.Bodies.rectangle(W - bottomLeftW / 2, H + 10, bottomLeftW, 20, wallOpts),
+    );
+
+    // Flipper-Pivot ganz an den Seiten
+    const flipperW = 200;
+    const flipperH = 22;
+    const pivotY = H - 120;
+    const leftPivotPos = { x: 30, y: pivotY };
+    const rightPivotPos = { x: W - 30, y: pivotY };
+
+    // Schräge Wände: schließen die Seiten zwischen Seitenwand und Flipper-Pivot
+    // Linke Rampe: von (0, 500) hinunter zum linken Pivot
+    const rampLen = Math.hypot(leftPivotPos.x - 0, pivotY - 500);
+    const rampAngleL = Math.atan2(pivotY - 500, leftPivotPos.x - 0);
+    walls.push(
+      Matter.Bodies.rectangle(
+        (0 + leftPivotPos.x) / 2,
+        (500 + pivotY) / 2,
+        rampLen + 20,
+        16,
+        { ...wallOpts, angle: rampAngleL },
+      ),
     );
     walls.push(
       Matter.Bodies.rectangle(
-        W - (W / 2 - gap / 2) / 2,
-        H + 10,
-        W / 2 - gap / 2,
-        20,
-        wallOpts,
+        (W + rightPivotPos.x) / 2,
+        (500 + pivotY) / 2,
+        rampLen + 20,
+        16,
+        { ...wallOpts, angle: -rampAngleL },
       ),
     );
-    // Schräge Wände unten zur Rinne
-    walls.push(
-      Matter.Bodies.rectangle(110, 580, 180, 16, {
-        ...wallOpts,
-        angle: Math.PI / 7,
-      }),
-    );
-    walls.push(
-      Matter.Bodies.rectangle(W - 110, 580, 180, 16, {
-        ...wallOpts,
-        angle: -Math.PI / 7,
-      }),
-    );
+
     // Startschacht rechts (Rampe)
     walls.push(
       Matter.Bodies.rectangle(W - 30, 80, 60, 12, {
@@ -165,12 +178,6 @@ export default function FlippyBall() {
       Matter.World.add(engine.world, body);
       bumperBodiesRef.current.set(body.id, { ...b, body, pulse: 0 });
     }
-
-    // Flipper
-    const flipperW = 110;
-    const flipperH = 22;
-    const leftPivotPos = { x: W / 2 - gap / 2 - (flipperW - 20), y: H - 110 };
-    const rightPivotPos = { x: W / 2 + gap / 2 + (flipperW - 20), y: H - 110 };
 
     const left = Matter.Bodies.rectangle(
       leftPivotPos.x + flipperW / 2 - 10,
@@ -214,25 +221,27 @@ export default function FlippyBall() {
       stiffness: 1,
     });
 
-    // Ruhe-Stopper: begrenzen den Ruhe-Winkel per Feder
+    // Ruhe-Stopper: Flipper hängen leicht nach unten
     const leftStopDown = Matter.Constraint.create({
-      pointA: { x: leftPivotPos.x + 90, y: leftPivotPos.y + 40 },
+      pointA: { x: leftPivotPos.x + flipperW - 20, y: leftPivotPos.y + 55 },
       bodyB: left,
       pointB: { x: flipperW / 2 - 12, y: 0 },
-      length: 15,
+      length: 5,
       stiffness: 0.02,
       damping: 0.1,
     });
     const rightStopDown = Matter.Constraint.create({
-      pointA: { x: rightPivotPos.x - 90, y: rightPivotPos.y + 40 },
+      pointA: { x: rightPivotPos.x - flipperW + 20, y: rightPivotPos.y + 55 },
       bodyB: right,
       pointB: { x: -flipperW / 2 + 12, y: 0 },
-      length: 15,
+      length: 5,
       stiffness: 0.02,
       damping: 0.1,
     });
 
-    Matter.World.add(engine.world, [left, right, leftPivot, rightPivot, leftStopDown, rightStopDown]);
+    Matter.World.add(engine.world, [left, right, leftPivot, rightPivot]);
+    // stopDown constraints entfernt — Flipper werden direkt per Winkel gesteuert
+    void leftStopDown; void rightStopDown;
     leftFlipperRef.current = left;
     rightFlipperRef.current = right;
     leftPivotRef.current = leftPivot;
@@ -277,43 +286,49 @@ export default function FlippyBall() {
       }
     });
 
-    // Flipper-Kräfte via beforeUpdate
+    // Flipper direkt per Winkelgeschwindigkeit steuern (garantiert reaktiv)
     Matter.Events.on(engine, "beforeUpdate", () => {
       const lf = leftFlipperRef.current!;
       const rf = rightFlipperRef.current!;
+      const upSpeed = 0.35;   // rad pro Schritt (schnell nach oben)
+      const downSpeed = 0.12; // rad pro Schritt (Rückfall)
+      const maxUp = -0.55;   // links: negativ = nach oben
+      const rest = 0.35;     // Ruhewinkel (Spitze leicht nach unten)
+
+      // Links
       if (leftDownRef.current) {
-        // nach oben schlagen
-        Matter.Body.applyForce(
-          lf,
-          { x: lf.position.x + 40, y: lf.position.y },
-          { x: 0, y: -0.18 },
-        );
+        if (lf.angle > maxUp) {
+          Matter.Body.setAngularVelocity(lf, -upSpeed);
+        } else {
+          Matter.Body.setAngle(lf, maxUp);
+          Matter.Body.setAngularVelocity(lf, 0);
+        }
+      } else {
+        if (lf.angle < rest) {
+          Matter.Body.setAngularVelocity(lf, downSpeed);
+        } else {
+          Matter.Body.setAngle(lf, rest);
+          Matter.Body.setAngularVelocity(lf, 0);
+        }
       }
+      // Rechts (spiegelbildlich)
       if (rightDownRef.current) {
-        Matter.Body.applyForce(
-          rf,
-          { x: rf.position.x - 40, y: rf.position.y },
-          { x: 0, y: -0.18 },
-        );
+        if (rf.angle < -maxUp) {
+          Matter.Body.setAngularVelocity(rf, upSpeed);
+        } else {
+          Matter.Body.setAngle(rf, -maxUp);
+          Matter.Body.setAngularVelocity(rf, 0);
+        }
+      } else {
+        if (rf.angle > -rest) {
+          Matter.Body.setAngularVelocity(rf, -downSpeed);
+        } else {
+          Matter.Body.setAngle(rf, -rest);
+          Matter.Body.setAngularVelocity(rf, 0);
+        }
       }
-      // Winkelbegrenzung
-      const maxAngle = 0.5;
-      if (lf.angle < -maxAngle) {
-        Matter.Body.setAngle(lf, -maxAngle);
-        Matter.Body.setAngularVelocity(lf, 0);
-      }
-      if (lf.angle > 0.35) {
-        Matter.Body.setAngle(lf, 0.35);
-        Matter.Body.setAngularVelocity(lf, 0);
-      }
-      if (rf.angle > maxAngle) {
-        Matter.Body.setAngle(rf, maxAngle);
-        Matter.Body.setAngularVelocity(rf, 0);
-      }
-      if (rf.angle < -0.35) {
-        Matter.Body.setAngle(rf, -0.35);
-        Matter.Body.setAngularVelocity(rf, 0);
-      }
+
+
 
       // Ball verloren?
       const bb = ballRef.current!;
@@ -363,15 +378,15 @@ export default function FlippyBall() {
       }
       ctx.restore();
 
-      // Rinnen / schräge Wände zeichnen
+      // Rinnen / schräge Wände zeichnen (schließen Seiten oberhalb der Flipper)
       ctx.strokeStyle = "#ffde59";
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 10;
       ctx.lineCap = "round";
       ctx.beginPath();
-      ctx.moveTo(10, 540);
-      ctx.lineTo(190, 620);
-      ctx.moveTo(W - 10, 540);
-      ctx.lineTo(W - 190, 620);
+      ctx.moveTo(0, 500);
+      ctx.lineTo(30, H - 120);
+      ctx.moveTo(W, 500);
+      ctx.lineTo(W - 30, H - 120);
       ctx.stroke();
 
       // Chute
@@ -418,7 +433,7 @@ export default function FlippyBall() {
         ctx.lineWidth = 3;
         ctx.beginPath();
         // rounded rect
-        const w = 110, h = 22, r = 10;
+        const w = 200, h = 22, r = 10;
         ctx.moveTo(-w / 2 + r, -h / 2);
         ctx.lineTo(w / 2 - r, -h / 2);
         ctx.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
