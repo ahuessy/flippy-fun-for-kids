@@ -290,39 +290,44 @@ export default function FlippyBall() {
     Matter.Events.on(engine, "beforeUpdate", () => {
       const lf = leftFlipperRef.current!;
       const rf = rightFlipperRef.current!;
-      const upSpeed = 0.9;   // rad/s beim Schlagen
-      const downSpeed = 0.4; // rad/s beim Zurückfallen
+      const upSpeed = 25;    // rad/s beim Schlagen (schnell)
+      const downSpeed = 8;   // rad/s beim Zurückfallen
       const maxUp = -0.55;   // links: negativ = nach oben
       const rest = 0.35;     // Ruhewinkel (Spitze leicht nach unten)
 
       // Links
       if (leftDownRef.current) {
-        if (lf.angle > maxUp) Matter.Body.setAngularVelocity(lf, -upSpeed);
-        else {
+        if (lf.angle > maxUp) {
+          Matter.Body.setAngularVelocity(lf, -upSpeed / 60);
+        } else {
           Matter.Body.setAngle(lf, maxUp);
           Matter.Body.setAngularVelocity(lf, 0);
         }
       } else {
-        if (lf.angle < rest) Matter.Body.setAngularVelocity(lf, downSpeed);
-        else {
+        if (lf.angle < rest) {
+          Matter.Body.setAngularVelocity(lf, downSpeed / 60);
+        } else {
           Matter.Body.setAngle(lf, rest);
           Matter.Body.setAngularVelocity(lf, 0);
         }
       }
       // Rechts (spiegelbildlich)
       if (rightDownRef.current) {
-        if (rf.angle < -maxUp) Matter.Body.setAngularVelocity(rf, upSpeed);
-        else {
+        if (rf.angle < -maxUp) {
+          Matter.Body.setAngularVelocity(rf, upSpeed / 60);
+        } else {
           Matter.Body.setAngle(rf, -maxUp);
           Matter.Body.setAngularVelocity(rf, 0);
         }
       } else {
-        if (rf.angle > -rest) Matter.Body.setAngularVelocity(rf, -downSpeed);
-        else {
+        if (rf.angle > -rest) {
+          Matter.Body.setAngularVelocity(rf, -downSpeed / 60);
+        } else {
           Matter.Body.setAngle(rf, -rest);
           Matter.Body.setAngularVelocity(rf, 0);
         }
       }
+
 
 
       // Ball verloren?
