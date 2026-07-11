@@ -284,43 +284,44 @@ export default function FlippyBall() {
       }
     });
 
-    // Flipper-Kräfte via beforeUpdate
+    // Flipper direkt per Winkelgeschwindigkeit steuern (garantiert reaktiv)
     Matter.Events.on(engine, "beforeUpdate", () => {
       const lf = leftFlipperRef.current!;
       const rf = rightFlipperRef.current!;
+      const upSpeed = 0.9;   // rad/s beim Schlagen
+      const downSpeed = 0.4; // rad/s beim Zurückfallen
+      const maxUp = -0.55;   // links: negativ = nach oben
+      const rest = 0.35;     // Ruhewinkel (Spitze leicht nach unten)
+
+      // Links
       if (leftDownRef.current) {
-        // nach oben schlagen
-        Matter.Body.applyForce(
-          lf,
-          { x: lf.position.x + 40, y: lf.position.y },
-          { x: 0, y: -0.18 },
-        );
+        if (lf.angle > maxUp) Matter.Body.setAngularVelocity(lf, -upSpeed);
+        else {
+          Matter.Body.setAngle(lf, maxUp);
+          Matter.Body.setAngularVelocity(lf, 0);
+        }
+      } else {
+        if (lf.angle < rest) Matter.Body.setAngularVelocity(lf, downSpeed);
+        else {
+          Matter.Body.setAngle(lf, rest);
+          Matter.Body.setAngularVelocity(lf, 0);
+        }
       }
+      // Rechts (spiegelbildlich)
       if (rightDownRef.current) {
-        Matter.Body.applyForce(
-          rf,
-          { x: rf.position.x - 40, y: rf.position.y },
-          { x: 0, y: -0.18 },
-        );
+        if (rf.angle < -maxUp) Matter.Body.setAngularVelocity(rf, upSpeed);
+        else {
+          Matter.Body.setAngle(rf, -maxUp);
+          Matter.Body.setAngularVelocity(rf, 0);
+        }
+      } else {
+        if (rf.angle > -rest) Matter.Body.setAngularVelocity(rf, -downSpeed);
+        else {
+          Matter.Body.setAngle(rf, -rest);
+          Matter.Body.setAngularVelocity(rf, 0);
+        }
       }
-      // Winkelbegrenzung
-      const maxAngle = 0.5;
-      if (lf.angle < -maxAngle) {
-        Matter.Body.setAngle(lf, -maxAngle);
-        Matter.Body.setAngularVelocity(lf, 0);
-      }
-      if (lf.angle > 0.35) {
-        Matter.Body.setAngle(lf, 0.35);
-        Matter.Body.setAngularVelocity(lf, 0);
-      }
-      if (rf.angle > maxAngle) {
-        Matter.Body.setAngle(rf, maxAngle);
-        Matter.Body.setAngularVelocity(rf, 0);
-      }
-      if (rf.angle < -0.35) {
-        Matter.Body.setAngle(rf, -0.35);
-        Matter.Body.setAngularVelocity(rf, 0);
-      }
+
 
       // Ball verloren?
       const bb = ballRef.current!;
