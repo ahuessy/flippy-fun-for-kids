@@ -298,7 +298,7 @@ export default function FlippyBall() {
       // Links
       if (leftDownRef.current) {
         if (lf.angle > maxUp) {
-          Matter.Body.setAngularVelocity(lf, -upSpeed / 60);
+          Matter.Body.setAngularVelocity(lf, -upSpeed);
         } else {
           Matter.Body.setAngle(lf, maxUp);
           Matter.Body.setAngularVelocity(lf, 0);
