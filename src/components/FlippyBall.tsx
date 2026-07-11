@@ -117,8 +117,8 @@ export default function FlippyBall() {
     walls.push(Matter.Bodies.rectangle(W / 2, -10, W, 20, wallOpts)); // oben
     walls.push(Matter.Bodies.rectangle(-10, H / 2, 20, H, wallOpts)); // links
     walls.push(Matter.Bodies.rectangle(W + 10, H / 2, 20, H, wallOpts)); // rechts
-    // Unten: Loch in der Mitte -> zwei Segmente
-    const gap = 130;
+    // Unten: Loch in der Mitte -> zwei Segmente (nur etwas größer als der Ball)
+    const gap = 44;
     walls.push(
       Matter.Bodies.rectangle((W / 2 - gap / 2) / 2, H + 10, W / 2 - gap / 2, 20, wallOpts),
     );
@@ -133,13 +133,13 @@ export default function FlippyBall() {
     );
     // Schräge Wände unten zur Rinne
     walls.push(
-      Matter.Bodies.rectangle(70, 600, 160, 16, {
+      Matter.Bodies.rectangle(110, 580, 180, 16, {
         ...wallOpts,
         angle: Math.PI / 7,
       }),
     );
     walls.push(
-      Matter.Bodies.rectangle(W - 70, 600, 160, 16, {
+      Matter.Bodies.rectangle(W - 110, 580, 180, 16, {
         ...wallOpts,
         angle: -Math.PI / 7,
       }),
@@ -169,8 +169,8 @@ export default function FlippyBall() {
     // Flipper
     const flipperW = 110;
     const flipperH = 22;
-    const leftPivotPos = { x: W / 2 - gap / 2 - 10, y: H - 110 };
-    const rightPivotPos = { x: W / 2 + gap / 2 + 10, y: H - 110 };
+    const leftPivotPos = { x: W / 2 - gap / 2 - (flipperW - 20), y: H - 110 };
+    const rightPivotPos = { x: W / 2 + gap / 2 + (flipperW - 20), y: H - 110 };
 
     const left = Matter.Bodies.rectangle(
       leftPivotPos.x + flipperW / 2 - 10,
@@ -369,9 +369,9 @@ export default function FlippyBall() {
       ctx.lineCap = "round";
       ctx.beginPath();
       ctx.moveTo(10, 540);
-      ctx.lineTo(140, 660);
+      ctx.lineTo(190, 620);
       ctx.moveTo(W - 10, 540);
-      ctx.lineTo(W - 140, 660);
+      ctx.lineTo(W - 190, 620);
       ctx.stroke();
 
       // Chute
