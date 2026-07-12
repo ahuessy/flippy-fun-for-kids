@@ -46,11 +46,34 @@ function Datenschutz() {
           Kontaktadresse.
         </p>
 
-        <h2 className="text-xl font-bold text-yellow-200">5. Kinder</h2>
+        <h2 className="text-xl font-bold text-yellow-200">5. Kinder und verantwortungsvolles Spielen</h2>
         <p>
-          Das Angebot richtet sich an Kinder und deren Familien. Es werden keine Registrierungen verlangt und
-          keine personenbezogenen Daten zu Kindern gespeichert.
+          Das Angebot richtet sich an Kinder ab 7 Jahren und deren Familien. Es werden keine Registrierungen
+          verlangt und keine personenbezogenen Daten zu Kindern gespeichert.
         </p>
+        <ul className="list-disc pl-5 space-y-2 text-white/90">
+          <li>
+            <strong>Spielzeit im Blick behalten:</strong> Auch wenn „Flippy Ball" viel Spaß macht, ist es wichtig,
+            regelmässig Pausen zu machen und nicht zu lange am Bildschirm zu sitzen.
+          </li>
+          <li>
+            <strong>Gemeinsam spielen:</strong> Eltern, Grosseltern und Geschwister sind herzlich eingeladen, das
+            Spiel zusammen mit dem Kind zu entdecken und darüber zu sprechen.
+          </li>
+          <li>
+            <strong>Freundlich miteinander umgehen:</strong> Wenn mehrere Kinder spielen, achtet darauf, dass alle
+            fair abwechseln und sich gegenseitig anfeuern.
+          </li>
+          <li>
+            <strong>Keine persönlichen Daten preisgeben:</strong> Kinder sollten niemals Namen, Adressen oder andere
+            persönliche Informationen in Spielen oder Chats weitergeben – hier ist das nicht möglich, da es keine
+            Chat-Funktion gibt.
+          </li>
+          <li>
+            <strong>Fragen werden beantwortet:</strong> Bei Unsicherheiten dürfen Kinder sich jederzeit an ihre
+            Eltern oder an die Kontaktadresse im Impressum wenden.
+          </li>
+        </ul>
 
         <h2 className="text-xl font-bold text-yellow-200">6. Änderungen</h2>
         <p className="text-sm text-white/80">
