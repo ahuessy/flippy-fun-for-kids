@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { Link } from "@tanstack/react-router";
 import Matter from "matter-js";
 
 // Spielfeldgröße (virtuell) — wird per CSS skaliert
@@ -286,52 +287,61 @@ export default function FlippyBall() {
       }
     });
 
-    // Flipper direkt per Winkelgeschwindigkeit steuern (garantiert reaktiv)
+    // Flipper direkt per Winkel steuern — snap to target ohne Zittern
+    const stuckRef = { frames: 0 };
     Matter.Events.on(engine, "beforeUpdate", () => {
       const lf = leftFlipperRef.current!;
       const rf = rightFlipperRef.current!;
-      const upSpeed = 0.35;   // rad pro Schritt (schnell nach oben)
-      const downSpeed = 0.12; // rad pro Schritt (Rückfall)
-      const maxUp = -0.55;   // links: negativ = nach oben
-      const rest = 0.35;     // Ruhewinkel (Spitze leicht nach unten)
+      const step = 0.32;       // rad pro Schritt nach oben
+      const stepDown = 0.14;   // rad pro Schritt zurück
+      const maxUp = -0.55;
+      const rest = 0.35;
 
-      // Links
-      if (leftDownRef.current) {
-        if (lf.angle > maxUp) {
-          Matter.Body.setAngularVelocity(lf, -upSpeed);
+      const driveAngle = (body: Matter.Body, target: number, speed: number) => {
+        const diff = target - body.angle;
+        if (Math.abs(diff) < 0.02) {
+          Matter.Body.setAngle(body, target);
+          Matter.Body.setAngularVelocity(body, 0);
         } else {
-          Matter.Body.setAngle(lf, maxUp);
-          Matter.Body.setAngularVelocity(lf, 0);
+          const s = Math.sign(diff) * Math.min(Math.abs(diff), speed);
+          Matter.Body.setAngle(body, body.angle + s);
+          Matter.Body.setAngularVelocity(body, 0);
         }
-      } else {
-        if (lf.angle < rest) {
-          Matter.Body.setAngularVelocity(lf, downSpeed);
+      };
+      driveAngle(lf, leftDownRef.current ? maxUp : rest, leftDownRef.current ? step : stepDown);
+      driveAngle(rf, rightDownRef.current ? -maxUp : -rest, rightDownRef.current ? step : stepDown);
+
+      const bb = ballRef.current!;
+      if (!bb.isStatic) {
+        // Ball innerhalb des Spielfelds halten (verhindert Herausschleudern)
+        const maxV = 14;
+        const v = bb.velocity;
+        const sp = Math.hypot(v.x, v.y);
+        if (sp > maxV) {
+          Matter.Body.setVelocity(bb, { x: (v.x / sp) * maxV, y: (v.y / sp) * maxV });
+        }
+        // Position clampen falls trotzdem entkommen
+        if (bb.position.x < 16 || bb.position.x > W - 16 || bb.position.y < 16) {
+          const nx = Math.max(20, Math.min(W - 20, bb.position.x));
+          const ny = Math.max(20, bb.position.y);
+          Matter.Body.setPosition(bb, { x: nx, y: ny });
+          Matter.Body.setVelocity(bb, { x: v.x * 0.5, y: Math.abs(v.y) * 0.5 });
+        }
+
+        // Ball hängen geblieben? (langsam & unten) -> auto-drain
+        if (bb.position.y > H - 200 && sp < 0.4) {
+          stuckRef.frames++;
+          if (stuckRef.frames > 120) {
+            // erzwinge Fall unter das Spielfeld
+            Matter.Body.setPosition(bb, { x: W / 2, y: H + 50 });
+            stuckRef.frames = 0;
+          }
         } else {
-          Matter.Body.setAngle(lf, rest);
-          Matter.Body.setAngularVelocity(lf, 0);
+          stuckRef.frames = 0;
         }
       }
-      // Rechts (spiegelbildlich)
-      if (rightDownRef.current) {
-        if (rf.angle < -maxUp) {
-          Matter.Body.setAngularVelocity(rf, upSpeed);
-        } else {
-          Matter.Body.setAngle(rf, -maxUp);
-          Matter.Body.setAngularVelocity(rf, 0);
-        }
-      } else {
-        if (rf.angle > -rest) {
-          Matter.Body.setAngularVelocity(rf, -downSpeed);
-        } else {
-          Matter.Body.setAngle(rf, -rest);
-          Matter.Body.setAngularVelocity(rf, 0);
-        }
-      }
-
-
 
       // Ball verloren?
-      const bb = ballRef.current!;
       if (!ballLostRef.current && !bb.isStatic && bb.position.y > H + 40) {
         ballLostRef.current = true;
         sfxRef.current.drain();
@@ -554,6 +564,11 @@ export default function FlippyBall() {
           >
             ▶ Spiel starten
           </button>
+          <div className="mt-6 flex justify-center gap-4 text-xs text-white/70">
+            <Link to="/impressum" className="underline hover:text-yellow-200">Impressum</Link>
+            <span>·</span>
+            <Link to="/datenschutz" className="underline hover:text-yellow-200">Datenschutz</Link>
+          </div>
         </div>
       </div>
     );
