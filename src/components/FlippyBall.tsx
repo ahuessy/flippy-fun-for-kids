@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { Link } from "@tanstack/react-router";
 import Matter from "matter-js";
 
 // Spielfeldgröße (virtuell) — wird per CSS skaliert
@@ -563,6 +564,11 @@ export default function FlippyBall() {
           >
             ▶ Spiel starten
           </button>
+          <div className="mt-6 flex justify-center gap-4 text-xs text-white/70">
+            <Link to="/impressum" className="underline hover:text-yellow-200">Impressum</Link>
+            <span>·</span>
+            <Link to="/datenschutz" className="underline hover:text-yellow-200">Datenschutz</Link>
+          </div>
         </div>
       </div>
     );
